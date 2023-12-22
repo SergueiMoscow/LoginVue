@@ -18,10 +18,9 @@ export default new Vuex.Store({
     auth_request(state){
       state.status = 'loading'
     },
-    auth_success(state, token, user){
+    auth_success(state, token){
       state.status = 'success'
       state.token = token
-      state.user = user
     },
     auth_error(state){
       state.status = 'error'
@@ -36,14 +35,15 @@ export default new Vuex.Store({
       //const url = state.authServer
       commit('auth_request')
       return new Promise((resolve, reject) => {
-        commit('auth_request')
-        axios.post(authServer, null, {params: user})
+        axios.post(authServer, user)
         .then(resp => {
           console.log(resp.data)
-          const token = resp.data.token
-          const user = resp.data.user
+          const token = resp.data.access
+          const refresh = resp.data.refresh
+          // const user = resp.data.user
           localStorage.setItem('token', token)
-          commit('auth_success', token, user)
+          localStorage.setItem('refresh', refresh)
+          commit('auth_success', token)
           resolve(resp)
         })
         .catch(err => {
@@ -58,10 +58,10 @@ export default new Vuex.Store({
         commit('auth_request')
         axios.post(authServer, null, {params: user})
         .then(resp => {
-          const token = resp.data.token
-          const user = resp.data.user
+          const token = resp.data.access
+          console.log('Resp.data.access: ' + resp.data.access)
           localStorage.setItem('token', token)
-          commit('auth_success', token, user)
+          commit('auth_success', token)
           resolve(resp)
         })
         .catch(err => {

@@ -1,7 +1,8 @@
 <template>
   <div>
     <form v-if="!isLoggedIn" class="login" @submit.prevent="login">
-      <input class="login-input" required v-model="email" type="email" placeholder="Name" />
+      <!-- <input class="login-input" required v-model="email" type="email" placeholder="Name" /> -->
+      <input class="login-input" required v-model="username" type="text" placeholder="Name" />
       <input class="login-input"
         required
         v-model="password"
@@ -20,14 +21,20 @@
 export default {
   data() {
     return {
-      email: "",
+      // email: "",
+      username: "",
       password: "",
     };
   },
   methods: {
       login: function () {
-        this.$store.dispatch('login', { email: this.email, password: this.password })
-       .then(() => this.$router.push('/'))
+        // this.$store.dispatch('login', { email: this.email, password: this.password })
+        this.$store.dispatch('login', { username: this.username, password: this.password })
+       .then(() => {
+            this.$router.push('/');
+            console.log('Login test: ' + this.isLoggedIn)
+          }
+        )
        .catch(err => console.log(err))
       },
       logout: function () {
@@ -39,7 +46,7 @@ export default {
     },
   computed: {
     isLoggedIn : function(){ 
-        console.log("LoggedIn" + this.$store.getters.isLoggedIn)
+        console.log("LoggedIn: " + this.$store.getters.isLoggedIn)
         return this.$store.getters.isLoggedIn
     }
   },
